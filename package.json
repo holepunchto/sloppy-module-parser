@@ -1,0 +1,31 @@
+{
+  "name": "sloppy-module-parser",
+  "version": "0.0.0",
+  "description": "Parse imports/exports/requires with a focus on speed over 100% correctness",
+  "main": "parse.js",
+  "files": [
+    "parse.js",
+    "sloppy-require-parser.js"
+  ],
+  "dependencies": {
+    "brittle": "^3.3.2",
+    "cjs-module-lexer": "^1.2.3",
+    "es-module-lexer": "^1.4.1"
+  },
+  "devDependencies": {
+    "standard": "^17.1.0"
+  },
+  "scripts": {
+    "test": "standard && brittle test.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/holepunchto/sloppy-module-parser.git"
+  },
+  "author": "Holepunch Inc",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/holepunchto/sloppy-module-parser/issues"
+  },
+  "homepage": "https://github.com/holepunchto/sloppy-module-parser"
+}
