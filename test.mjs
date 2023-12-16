@@ -42,3 +42,23 @@ test('script that falls back', function (t) {
   t.is(res.type, 'module')
   t.alike(res.resolutions.map(r => r.input), ['world'])
 })
+
+test('detects addons', function (t) {
+  {
+    const res = parse(`
+      import gyp from 'node-gyp-build'
+      import some from 'else'
+    `)
+
+    t.alike(res.resolutions.map(r => r.isAddon), [true, false])
+  }
+
+  {
+    const res = parse(`
+      const some = require('something')
+      const addon = require.addon()'
+    `, 'script')
+
+    t.alike(res.resolutions.map(r => r.isAddon), [false, true])
+  }
+})
