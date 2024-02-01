@@ -1,10 +1,11 @@
 const CALL_WITH_STRING = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*\)/
-const IS_ADDON = /^\s*\.addon\s*\(/
+const IS_ADDON = /^\s*\.addon\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)?\s*\)/
 
 module.exports = parseCJS
 
-function parseCJS (src, resolutions = []) {
+function parseCJS (src, result) {
   const seen = []
+  const seenAddons = []
 
   let addons = false
   let i = src.indexOf('require')
@@ -27,22 +28,22 @@ function parseCJS (src, resolutions = []) {
         const req = m[1].slice(1, -1)
         if (seen.indexOf(req) === -1) {
           seen.push(req)
-          resolutions.push(add(req, false))
+          result.resolutions.push({ isImport: false, position: null, input: req, output: null })
         }
-      } else if (addons === false && IS_ADDON.test(suffix)) {
-        addons = true
-        resolutions.push(add(null, true))
+      } else {
+        const m = suffix.match(IS_ADDON)
+        if (m) {
+          const req = m[1] ? m[1].slice(1, -1) : '.'
+          if (seenAddons.indexOf(req) === -1) {
+            seenAddons.push(req)
+            result.addons.push({ input: req, output: null })
+          }
+        }
       }
     }
 
     i = src.indexOf('require', i + 7)
   }
-
-  return resolutions
-}
-
-function add (input, isAddon) {
-  return { isImport: false, isAddon, position: null, input, output: null }
 }
 
 function newWord (src, i) {

@@ -11,7 +11,8 @@ exports.parse = function parse (src, type = 'module', strictMode = false) {
     type,
     resolutions: [],
     namedImports: [],
-    exports: null
+    exports: null,
+    addons: []
   }
 
   if (type === 'json') {
@@ -39,7 +40,6 @@ exports.parse = function parse (src, type = 'module', strictMode = false) {
       const isWildcard = i.d === -1 && parseNames(src.slice(i.ss + 6, i.s), names)
       const resolution = {
         isImport: true,
-        isAddon: i.n === 'node-gyp-build',
         position: [i.ss, i.s - q, i.e + q],
         input: i.n,
         output: null
@@ -56,7 +56,6 @@ exports.parse = function parse (src, type = 'module', strictMode = false) {
     } else if (i.ss !== i.s) {
       result.resolutions.push({
         isImport: true,
-        isAddon: false,
         position: [i.ss, i.s - 1, -1],
         input: null,
         output: null
@@ -69,7 +68,7 @@ exports.parse = function parse (src, type = 'module', strictMode = false) {
     return result
   }
 
-  srp(src, result.resolutions)
+  srp(src, result)
   return result
 }
 
