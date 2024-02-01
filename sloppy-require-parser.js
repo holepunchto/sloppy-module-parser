@@ -7,7 +7,6 @@ function parseCJS (src, result) {
   const seen = []
   const seenAddons = []
 
-  let addons = false
   let i = src.indexOf('require')
   let j = i > -1 ? src.indexOf('/*') : -1
 
