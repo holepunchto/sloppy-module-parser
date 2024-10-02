@@ -12,7 +12,8 @@ exports.parse = function parse (src, type = 'module', strictMode = false) {
     resolutions: [],
     namedImports: [],
     exports: null,
-    addons: []
+    addons: [],
+    assets: []
   }
 
   if (type === 'json') {
