@@ -56,9 +56,8 @@ test('detects addons', function (t) {
 test('detects assets', function (t) {
   const res = parse(`
     const some = require('something')
-    const asset = require.asset()'
     const asset2 = require.asset('./here')
   `, 'script')
 
-  t.alike(res.assets.map(a => a.input), ['.', './here'])
+  t.alike(res.assets.map(a => a.input), ['./here'])
 })

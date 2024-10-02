@@ -34,13 +34,18 @@ function parseCJS (src, result) {
         const m = suffix.match(IS_EXTENSION)
         if (m) {
           const isAddon = m[1] === 'addon'
-          const seen = isAddon ? seenAddons : seenAssets
-          const list = isAddon ? result.addons : result.assets
           const req = m[2] ? m[2].slice(1, -1) : '.'
 
-          if (seen.indexOf(req) === -1) {
-            seen.push(req)
-            list.push({ input: req, output: null })
+          if (isAddon) {
+            if (seenAddons.indexOf(req) === -1) {
+              seenAddons.push(req)
+              result.addons.push({ input: req, output: null })
+            }
+          } else if (m[2]) {
+            if (seenAssets.indexOf(req) === -1) {
+              seenAssets.push(req)
+              result.assets.push({ input: req, output: null })
+            }
           }
         }
       }
