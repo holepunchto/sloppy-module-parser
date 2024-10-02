@@ -1,11 +1,12 @@
 const CALL_WITH_STRING = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*\)/
-const IS_ADDON = /^\s*\.addon\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)?\s*\)/
+const IS_EXTENSION = /^\s*\.(addon|asset)\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)?\s*\)/
 
 module.exports = parseCJS
 
 function parseCJS (src, result) {
   const seen = []
   const seenAddons = []
+  const seenAssets = []
 
   let i = src.indexOf('require')
   let j = i > -1 ? src.indexOf('/*') : -1
@@ -30,12 +31,16 @@ function parseCJS (src, result) {
           result.resolutions.push({ isImport: false, position: null, input: req, output: null })
         }
       } else {
-        const m = suffix.match(IS_ADDON)
+        const m = suffix.match(IS_EXTENSION)
         if (m) {
-          const req = m[1] ? m[1].slice(1, -1) : '.'
-          if (seenAddons.indexOf(req) === -1) {
-            seenAddons.push(req)
-            result.addons.push({ input: req, output: null })
+          const isAddon = m[1] === 'addon'
+          const seen = isAddon ? seenAddons : seenAssets
+          const list = isAddon ? result.addons : result.assets
+          const req = m[2] ? m[2].slice(1, -1) : '.'
+
+          if (seen.indexOf(req) === -1) {
+            seen.push(req)
+            list.push({ input: req, output: null })
           }
         }
       }
