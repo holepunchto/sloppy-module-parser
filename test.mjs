@@ -40,7 +40,7 @@ test('spread require output', function (t) {
     `, 'script')
 
   t.is(res.type, 'script')
-  t.alike(res.resolutions.map(r => r.input), ['./def.pear'])
+  t.alike(res.resolutions.map(r => r.input), ['./def/pear'])
 })
 
 test('script that falls back', function (t) {
