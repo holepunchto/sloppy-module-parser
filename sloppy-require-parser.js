@@ -20,7 +20,7 @@ function parseCJS (src, result) {
       continue
     }
 
-    if (newWord(src, i) && !inComment(src, i)) {
+    if ((newWord(src, i) || isSpread(src, i)) && !inComment(src, i)) {
       const suffix = src.slice(i + 7)
       const m = suffix.match(CALL_WITH_STRING)
 
@@ -58,6 +58,11 @@ function parseCJS (src, result) {
 function newWord (src, i) {
   const s = i > 0 ? src.slice(i - 1, i) : ''
   return !/^\w|["'`._]/.test(s)
+}
+
+function isSpread (src, i) {
+  const s = i > 0 ? src.slice(i - 3, i) : ''
+  return s === '...'
 }
 
 function inComment (src, i) {

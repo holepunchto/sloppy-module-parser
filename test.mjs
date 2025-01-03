@@ -34,6 +34,19 @@ test('basic module', function (t) {
   t.alike(res.resolutions.map(r => r.input), ['world', 'dynamic'])
 })
 
+test('spread require output', function (t) {
+  const res = parse(`
+      const b = [...require("./def/pear" )]
+      const c = { ...require("./obj" ) }
+      const d = {
+        ...require("./newline-obj" )
+      }
+    `, 'script')
+
+  t.is(res.type, 'script')
+  t.alike(res.resolutions.map(r => r.input), ['./def/pear', './obj', './newline-obj'])
+})
+
 test('script that falls back', function (t) {
   const res = parse(`
     import hello from 'world'
