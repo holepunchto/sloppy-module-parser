@@ -1,10 +1,10 @@
 const CALL_WITH_STRING = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*\)/
-const IS_EXTENSION = /^\s*\.(addon|asset)\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)?\s*\)/
+const IS_EXTENSION = /^\s*\.(addon|addon\.resolve|asset|asset\.resolve|resolve|)\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)?\s*\)/
 
 module.exports = parseCJS
 
 function parseCJS (src, result) {
-  const seen = []
+  const seenRequires = []
   const seenAddons = []
   const seenAssets = []
 
@@ -26,14 +26,17 @@ function parseCJS (src, result) {
 
       if (m) {
         const req = m[1].slice(1, -1)
-        if (seen.indexOf(req) === -1) {
-          seen.push(req)
+        if (seenRequires.indexOf(req) === -1) {
+          seenRequires.push(req)
           result.resolutions.push({ isImport: false, position: null, input: req, output: null })
         }
       } else {
         const m = suffix.match(IS_EXTENSION)
         if (m) {
-          const isAddon = m[1] === 'addon'
+          const ext = m[1]
+          const isAddon = ext === 'addon' || ext === 'addon.resolve'
+          const isAsset = ext === 'asset' || ext === 'asset.resolve'
+          const isResolve = ext === 'resolve'
           const req = m[2] ? m[2].slice(1, -1) : '.'
 
           if (isAddon) {
@@ -41,10 +44,15 @@ function parseCJS (src, result) {
               seenAddons.push(req)
               result.addons.push({ input: req, output: null })
             }
-          } else if (m[2]) {
+          } else if (isAsset && m[2]) {
             if (seenAssets.indexOf(req) === -1) {
               seenAssets.push(req)
               result.assets.push({ input: req, output: null })
+            }
+          } else if (isResolve && m[2]) {
+            if (seenRequires.indexOf(req) === -1) {
+              seenRequires.push(req)
+              result.resolutions.push({ isImport: false, position: null, input: req, output: null })
             }
           }
         }
