@@ -1,5 +1,5 @@
 const CALL_WITH_STRING = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*\)/
-const IS_EXTENSION = /^\s*\.(addon|addon\.resolve|asset|asset\.resolve|resolve|)\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)?\s*\)/
+const IS_EXTENSION = /^\s*\.(addon|addon\.resolve|asset|asset\.resolve|resolve)\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)?\s*\)/
 
 module.exports = parseCJS
 
