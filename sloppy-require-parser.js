@@ -1,5 +1,5 @@
 const CALL_WITH_STRING = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*\)/
-const IS_EXTENSION = /^\s*\.(addon|addon\.resolve|asset|asset\.resolve|resolve)\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)?\s*\)/
+const IS_EXTENSION = /^\s*\.(addon|addon\.resolve|asset|resolve)\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)?\s*\)/
 
 module.exports = parseCJS
 
@@ -35,7 +35,7 @@ function parseCJS (src, result) {
         if (m) {
           const ext = m[1]
           const isAddon = ext === 'addon' || ext === 'addon.resolve'
-          const isAsset = ext === 'asset' || ext === 'asset.resolve'
+          const isAsset = ext === 'asset'
           const isResolve = ext === 'resolve'
           const req = m[2] ? m[2].slice(1, -1) : '.'
 
