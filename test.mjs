@@ -5,22 +5,34 @@ await init()
 
 test('basic script', function (t) {
   {
-    const res = parse(`
+    const res = parse(
+      `
       require   ("hello" );require('world')
-    `, 'script')
+    `,
+      'script'
+    )
 
     t.is(res.type, 'script')
-    t.alike(res.resolutions.map(r => r.input), ['hello', 'world'])
+    t.alike(
+      res.resolutions.map((r) => r.input),
+      ['hello', 'world']
+    )
   }
 
   {
-    const res = parse(`
+    const res = parse(
+      `
       require('hello')
       require('world')
-    `, 'script')
+    `,
+      'script'
+    )
 
     t.is(res.type, 'script')
-    t.alike(res.resolutions.map(r => r.input), ['hello', 'world'])
+    t.alike(
+      res.resolutions.map((r) => r.input),
+      ['hello', 'world']
+    )
   }
 })
 
@@ -31,46 +43,75 @@ test('basic module', function (t) {
   `)
 
   t.is(res.type, 'module')
-  t.alike(res.resolutions.map(r => r.input), ['world', 'dynamic'])
+  t.alike(
+    res.resolutions.map((r) => r.input),
+    ['world', 'dynamic']
+  )
 })
 
 test('spread require output', function (t) {
-  const res = parse(`
+  const res = parse(
+    `
       const b = [...require("./def/pear" )]
       const c = { ...require("./obj" ) }
       const d = {
         ...require("./newline-obj" )
       }
-    `, 'script')
+    `,
+    'script'
+  )
 
   t.is(res.type, 'script')
-  t.alike(res.resolutions.map(r => r.input), ['./def/pear', './obj', './newline-obj'])
+  t.alike(
+    res.resolutions.map((r) => r.input),
+    ['./def/pear', './obj', './newline-obj']
+  )
 })
 
 test('script that falls back', function (t) {
-  const res = parse(`
+  const res = parse(
+    `
     import hello from 'world'
-  `, 'script', false)
+  `,
+    'script',
+    false
+  )
 
   t.is(res.type, 'module')
-  t.alike(res.resolutions.map(r => r.input), ['world'])
+  t.alike(
+    res.resolutions.map((r) => r.input),
+    ['world']
+  )
 })
 
 test('detects addons', function (t) {
-  const res = parse(`
+  const res = parse(
+    `
     const some = require('something')
     const addon = require.addon()'
     const addon2 = require.addon('./here')
-  `, 'script')
+    const addon3 = require.addon('./referred', __filename)
+  `,
+    'script'
+  )
 
-  t.alike(res.addons.map(a => a.input), ['.', './here'])
+  t.alike(
+    res.addons.map((a) => a.input),
+    ['.', './here', './referred']
+  )
 })
 
 test('detects assets', function (t) {
-  const res = parse(`
+  const res = parse(
+    `
     const some = require('something')
     const asset2 = require.asset('./here')
-  `, 'script')
+  `,
+    'script'
+  )
 
-  t.alike(res.assets.map(a => a.input), ['./here'])
+  t.alike(
+    res.assets.map((a) => a.input),
+    ['./here']
+  )
 })

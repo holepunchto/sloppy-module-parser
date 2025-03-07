@@ -16,7 +16,7 @@
     "standard": "^17.1.0"
   },
   "scripts": {
-    "test": "standard && brittle test.mjs"
+    "test": "standard && node test.mjs"
   },
   "repository": {
     "type": "git",
