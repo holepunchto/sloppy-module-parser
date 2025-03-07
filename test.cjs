@@ -1,7 +1,8 @@
-import { init, parse } from './parse.js'
-import test from 'brittle'
+const { parse } = require('./parse')
+const test = require('brittle')
 
-await init()
+const mjs = require('es-module-lexer')
+mjs.initSync()
 
 test('basic script', function (t) {
   {
