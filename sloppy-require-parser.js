@@ -71,20 +71,9 @@ function parseCJS (src, result) {
               result.resolutions.push({ isImport: false, position: null, input: attr, output: null })
             }
 
-            // imports.json
-            // { "baz": "debounceify" }
-
-            // const req4 = 'debounceify'
-            // if (seenRequires.indexOf(req4) === -1) {
-            //   seenRequires.push(req4)
-            //   result.resolutions.push({ isImport: false, position: null, input: req4, output: null })
-            // }
-
-            // const req3 = 'baz'
-            // if (seenRequires.indexOf(req3) === -1) {
-            //   seenRequires.push(req3)
-            //   result.resolutions.push({ isImport: false, position: null, input: req3, output: null })
-            // }
+            if (result.imports.indexOf(attr) === -1) {
+              result.imports.push(attr)
+            }
           }
         }
       }
