@@ -71,8 +71,8 @@ function parseCJS (src, result) {
               result.resolutions.push({ isImport: false, position: null, input: attr, output: null })
             }
 
-            if (result.imports.indexOf(attr) === -1) {
-              result.imports.push(attr)
+            if (result.importsAttributes.indexOf(attr) === -1) {
+              result.importsAttributes.push(attr)
             }
           }
         }

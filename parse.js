@@ -9,7 +9,7 @@ exports.init = async function init () {
 exports.parse = function parse (src, type = 'module', strictMode = false) {
   const result = {
     type,
-    imports: [],
+    importsAttributes: [],
     resolutions: [],
     namedImports: [],
     exports: null,
