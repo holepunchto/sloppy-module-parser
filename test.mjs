@@ -116,15 +116,16 @@ test('detects assets', function (t) {
   )
 })
 
-test.solo('bare-module', function (t) {
+test('bare-module', function (t) {
   const res = parse(
       `
       require('foo', { with: { imports: './imports.json' } })
     `,
       'script'
   )
-  console.log('🚀 ~ res:', res)
 
   t.is(res.type, 'script')
   t.is(res.resolutions[0].input, 'foo')
+  t.is(res.resolutions[1].input, './imports.json')
+  t.is(res.imports[0], './imports.json')
 })
