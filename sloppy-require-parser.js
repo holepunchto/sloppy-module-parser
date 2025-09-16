@@ -1,5 +1,5 @@
 const CALL_WITH_STRING = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*\)/
-const CALL_WITH_STRING_AND_BARE_MODULE = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*,\s*({.*})\s*\)/
+const CALL_WITH_STRING_WITH_IMPORTS_ATTRIBUTE = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*,\s*({\s*with\s*:\s*{\s*imports\s*:\s*('[^']+'|"[^"]+"|`[^`]+`)\s*}\s*})\s*\)/
 const IS_EXTENSION = /^\s*\.(addon|addon\.resolve|asset|resolve)\s*\(\s*(?:('[^']+'|"[^"]+"|`[^`]+`)(?:,\s*__filename)?)?\s*\)/
 
 module.exports = parseCJS
@@ -57,13 +57,34 @@ function parseCJS (src, result) {
             }
           }
         } else {
-          const m = suffix.match(CALL_WITH_STRING_AND_BARE_MODULE)
+          const m = suffix.match(CALL_WITH_STRING_WITH_IMPORTS_ATTRIBUTE)
           if (m) {
             const req = m[1].slice(1, -1)
             if (seenRequires.indexOf(req) === -1) {
               seenRequires.push(req)
-              result.resolutions.push({ isImport: false, position: null, input: req, output: null, bareModule: m[2] })
+              result.resolutions.push({ isImport: false, position: null, input: req, output: null })
             }
+
+            const attr = m[3].slice(1, -1)
+            if (seenRequires.indexOf(attr) === -1) {
+              seenRequires.push(attr)
+              result.resolutions.push({ isImport: false, position: null, input: attr, output: null })
+            }
+
+            // imports.json
+            // { "baz": "debounceify" }
+
+            // const req4 = 'debounceify'
+            // if (seenRequires.indexOf(req4) === -1) {
+            //   seenRequires.push(req4)
+            //   result.resolutions.push({ isImport: false, position: null, input: req4, output: null })
+            // }
+
+            // const req3 = 'baz'
+            // if (seenRequires.indexOf(req3) === -1) {
+            //   seenRequires.push(req3)
+            //   result.resolutions.push({ isImport: false, position: null, input: req3, output: null })
+            // }
           }
         }
       }
