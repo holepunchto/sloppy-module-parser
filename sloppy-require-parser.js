@@ -1,4 +1,5 @@
 const CALL_WITH_STRING = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*\)/
+const CALL_WITH_STRING_AND_BARE_MODULE = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*,\s*({.*})\s*\)/
 const IS_EXTENSION = /^\s*\.(addon|addon\.resolve|asset|resolve)\s*\(\s*(?:('[^']+'|"[^"]+"|`[^`]+`)(?:,\s*__filename)?)?\s*\)/
 
 module.exports = parseCJS
@@ -53,6 +54,15 @@ function parseCJS (src, result) {
             if (seenRequires.indexOf(req) === -1) {
               seenRequires.push(req)
               result.resolutions.push({ isImport: false, position: null, input: req, output: null })
+            }
+          }
+        } else {
+          const m = suffix.match(CALL_WITH_STRING_AND_BARE_MODULE)
+          if (m) {
+            const req = m[1].slice(1, -1)
+            if (seenRequires.indexOf(req) === -1) {
+              seenRequires.push(req)
+              result.resolutions.push({ isImport: false, position: null, input: req, output: null, bareModule: m[2] })
             }
           }
         }
