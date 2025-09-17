@@ -127,5 +127,5 @@ test('bare-module', function (t) {
   t.is(res.type, 'script')
   t.is(res.resolutions[0].input, 'foo')
   t.is(res.resolutions[1].input, './imports.json')
-  t.is(res.imports[0], './imports.json')
+  t.is(res.importsAttributes[0], './imports.json')
 })
