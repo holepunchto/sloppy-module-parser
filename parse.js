@@ -2,11 +2,11 @@ const mjs = require('es-module-lexer')
 const cjs = require('cjs-module-lexer')
 const srp = require('./sloppy-require-parser')
 
-exports.init = async function init () {
+exports.init = async function init() {
   await mjs.init
 }
 
-exports.parse = function parse (src, type = 'module', strictMode = false) {
+exports.parse = function parse(src, type = 'module', strictMode = false) {
   const result = {
     type,
     importsAttributes: [],
@@ -37,9 +37,10 @@ exports.parse = function parse (src, type = 'module', strictMode = false) {
     }
 
     if (i.n) {
-      const q = (i.d > -1 ? 0 : 1)
+      const q = i.d > -1 ? 0 : 1
       const names = []
-      const isWildcard = i.d === -1 && parseNames(src.slice(i.ss + 6, i.s), names)
+      const isWildcard =
+        i.d === -1 && parseNames(src.slice(i.ss + 6, i.s), names)
       const resolution = {
         isImport: true,
         position: [i.ss, i.s - q, i.e + q],
@@ -74,12 +75,12 @@ exports.parse = function parse (src, type = 'module', strictMode = false) {
   return result
 }
 
-exports.exports = function exports (src, type) {
+exports.exports = function exports(src, type) {
   if (type === 'module') return mjs.parse(src)[1]
   return type === 'json' ? [] : cjs.parse(src).exports
 }
 
-function mjsParse (src) {
+function mjsParse(src) {
   try {
     return mjs.parse(src)
   } catch {
@@ -87,7 +88,7 @@ function mjsParse (src) {
   }
 }
 
-function parseNames (imp, result) {
+function parseNames(imp, result) {
   imp = imp.replace(/\/\/[^n]+/g, '').replace(/\/\*[^*]*\*\//g, '')
 
   const bs = imp.indexOf('{')
