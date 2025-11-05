@@ -1,4 +1,5 @@
 const CALL_WITH_STRING = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*\)/
+const WITH_IMPORTS_ATTRIBUTE = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*,\s*({\s*with\s*:\s*{\s*imports\s*:\s*('[^']+'|"[^"]+"|`[^`]+`)\s*}\s*})\s*\)/
 const IS_EXTENSION = /^\s*\.(addon|addon\.resolve|asset|resolve)\s*\(\s*(?:('[^']+'|"[^"]+"|`[^`]+`)(?:,\s*__filename)?)?\s*\)/
 
 module.exports = parseCJS
@@ -53,6 +54,25 @@ function parseCJS (src, result) {
             if (seenRequires.indexOf(req) === -1) {
               seenRequires.push(req)
               result.resolutions.push({ isImport: false, position: null, input: req, output: null })
+            }
+          }
+        } else {
+          const m = suffix.match(WITH_IMPORTS_ATTRIBUTE)
+          if (m) {
+            const req = m[1].slice(1, -1)
+            if (seenRequires.indexOf(req) === -1) {
+              seenRequires.push(req)
+              result.resolutions.push({ isImport: false, position: null, input: req, output: null })
+            }
+
+            const attr = m[3].slice(1, -1)
+            if (seenRequires.indexOf(attr) === -1) {
+              seenRequires.push(attr)
+              result.resolutions.push({ isImport: false, position: null, input: attr, output: null })
+            }
+
+            if (result.importsAttributes.indexOf(attr) === -1) {
+              result.importsAttributes.push(attr)
             }
           }
         }

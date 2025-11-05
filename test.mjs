@@ -115,3 +115,17 @@ test('detects assets', function (t) {
     ['./here']
   )
 })
+
+test('bare-module', function (t) {
+  const res = parse(
+      `
+      require('foo', { with: { imports: './imports.json' } })
+    `,
+      'script'
+  )
+
+  t.is(res.type, 'script')
+  t.is(res.resolutions[0].input, 'foo')
+  t.is(res.resolutions[1].input, './imports.json')
+  t.is(res.importsAttributes[0], './imports.json')
+})
