@@ -13,13 +13,16 @@
   },
   "devDependencies": {
     "brittle": "^3.3.2",
+    "lunte": "^1.0.0",
     "prettier": "^3.6.2",
     "prettier-config-holepunch": "^1.0.0"
   },
   "scripts": {
     "format": "prettier --write .",
-    "lint": "prettier --check .",
-    "test": "node test.mjs"
+    "lint": "prettier --check . && lunte",
+    "test": "npm run test:node && npm run test:bare",
+    "test:node": "brittle-node test.mjs",
+    "test:bare": "brittle-bare test.mjs"
   },
   "repository": {
     "type": "git",
