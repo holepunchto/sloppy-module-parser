@@ -39,8 +39,7 @@ exports.parse = function parse(src, type = 'module', strictMode = false) {
     if (i.n) {
       const q = i.d > -1 ? 0 : 1
       const names = []
-      const isWildcard =
-        i.d === -1 && parseNames(src.slice(i.ss + 6, i.s), names)
+      const isWildcard = i.d === -1 && parseNames(src.slice(i.ss + 6, i.s), names)
       const resolution = {
         isImport: true,
         position: [i.ss, i.s - q, i.e + q],
