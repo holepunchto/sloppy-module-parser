@@ -118,10 +118,10 @@ test('detects assets', function (t) {
 
 test('bare-module', function (t) {
   const res = parse(
-      `
+    `
       require('foo', { with: { imports: './imports.json' } })
     `,
-      'script'
+    'script'
   )
 
   t.is(res.type, 'script')
