@@ -11,7 +11,7 @@ This limitation gives it a massive speed boost compared to other parsers.
 
 ## Usage
 
-``` js
+```js
 const { init, parse } = require('sloppy-module-parser')
 
 await init() // needed to init the async esm parser used

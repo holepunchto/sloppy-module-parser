@@ -1,10 +1,12 @@
 const CALL_WITH_STRING = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*\)/
-const WITH_IMPORTS_ATTRIBUTE = /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*,\s*({\s*with\s*:\s*{\s*imports\s*:\s*('[^']+'|"[^"]+"|`[^`]+`)\s*}\s*})\s*\)/
-const IS_EXTENSION = /^\s*\.(addon|addon\.resolve|asset|resolve)\s*\(\s*(?:('[^']+'|"[^"]+"|`[^`]+`)(?:,\s*__filename)?)?\s*\)/
+const WITH_IMPORTS_ATTRIBUTE =
+  /^\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*,\s*({\s*with\s*:\s*{\s*imports\s*:\s*('[^']+'|"[^"]+"|`[^`]+`)\s*}\s*})\s*\)/
+const IS_EXTENSION =
+  /^\s*\.(addon|addon\.resolve|asset|resolve)\s*\(\s*(?:('[^']+'|"[^"]+"|`[^`]+`)(?:,\s*__filename)?)?\s*\)/
 
 module.exports = parseCJS
 
-function parseCJS (src, result) {
+function parseCJS(src, result) {
   const seenRequires = []
   const seenAddons = []
   const seenAssets = []
@@ -29,7 +31,12 @@ function parseCJS (src, result) {
         const req = m[1].slice(1, -1)
         if (seenRequires.indexOf(req) === -1) {
           seenRequires.push(req)
-          result.resolutions.push({ isImport: false, position: null, input: req, output: null })
+          result.resolutions.push({
+            isImport: false,
+            position: null,
+            input: req,
+            output: null
+          })
         }
       } else {
         const m = suffix.match(IS_EXTENSION)
@@ -53,7 +60,12 @@ function parseCJS (src, result) {
           } else if (isResolve && m[2]) {
             if (seenRequires.indexOf(req) === -1) {
               seenRequires.push(req)
-              result.resolutions.push({ isImport: false, position: null, input: req, output: null })
+              result.resolutions.push({
+                isImport: false,
+                position: null,
+                input: req,
+                output: null
+              })
             }
           }
         } else {
@@ -62,13 +74,23 @@ function parseCJS (src, result) {
             const req = m[1].slice(1, -1)
             if (seenRequires.indexOf(req) === -1) {
               seenRequires.push(req)
-              result.resolutions.push({ isImport: false, position: null, input: req, output: null })
+              result.resolutions.push({
+                isImport: false,
+                position: null,
+                input: req,
+                output: null
+              })
             }
 
             const attr = m[3].slice(1, -1)
             if (seenRequires.indexOf(attr) === -1) {
               seenRequires.push(attr)
-              result.resolutions.push({ isImport: false, position: null, input: attr, output: null })
+              result.resolutions.push({
+                isImport: false,
+                position: null,
+                input: attr,
+                output: null
+              })
             }
 
             if (result.importsAttributes.indexOf(attr) === -1) {
@@ -83,17 +105,20 @@ function parseCJS (src, result) {
   }
 }
 
-function newWord (src, i) {
+function newWord(src, i) {
   const s = i > 0 ? src.slice(i - 1, i) : ''
   return !/^\w|["'`._]/.test(s)
 }
 
-function isSpread (src, i) {
+function isSpread(src, i) {
   const s = i > 0 ? src.slice(i - 3, i) : ''
   return s === '...'
 }
 
-function inComment (src, i) {
+function inComment(src, i) {
   const pre = src.slice(i > 100 ? i - 100 : 0, i)
-  return pre.indexOf('//', Math.max(pre.lastIndexOf('\n'), 0)) > -1 && src.slice(i, i + 100).indexOf('\n') > -1
+  return (
+    pre.indexOf('//', Math.max(pre.lastIndexOf('\n'), 0)) > -1 &&
+    src.slice(i, i + 100).indexOf('\n') > -1
+  )
 }
